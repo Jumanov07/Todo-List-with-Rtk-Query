@@ -23,10 +23,15 @@ const TodoList = () => {
   const [deleteTodo] = useDeleteTodoMutation();
   const [addTodo] = useAddTodoMutation();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addTodo({ userId: 1, title: newTodo, completed: false });
-    setNewTodo("");
+
+    try {
+      await addTodo({ userId: 1, title: newTodo, completed: false });
+      setNewTodo("");
+    } catch (error) {
+      alert(error.message);
+    }
   };
 
   const newItemSection = (
@@ -52,7 +57,7 @@ const TodoList = () => {
   if (isLoading) {
     content = <p>Loading...</p>;
   } else if (isSuccess) {
-    content = todos.map((todo) => (
+    content = todos?.map((todo) => (
       <article key={todo.id}>
         <div className="todo">
           <input
@@ -75,7 +80,7 @@ const TodoList = () => {
       </article>
     ));
   } else if (isError) {
-    content = <p>{error}</p>;
+    content = <p>{error.message}</p>;
   }
 
   return (
